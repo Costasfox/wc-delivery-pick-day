@@ -1,0 +1,22 @@
+{
+  "name": "costasch/wc-delivery-pick-day",
+  "description": "Validated delivery scheduling and capacity controls for WooCommerce.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "php-parallel-lint/php-parallel-lint": "^1.4",
+    "phpunit/phpunit": "^10.5 || ^11.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CostasCh\\WCDelivery\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "lint": "parallel-lint --exclude vendor ."
+  }
+}

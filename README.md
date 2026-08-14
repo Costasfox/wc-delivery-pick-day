@@ -1,70 +1,76 @@
-# WooCommerce Delivery Pick Day
+# WooCommerce Delivery Scheduling & Capacity
 
-**Version**: 2.2  
-**Author**: [CostasCh](https://costasch.xyz)
+A WooCommerce extension for stores that need controlled local-delivery dates, time windows, service areas, and daily order limits.
 
-This plugin adds a highly customizable delivery date and time picker to your WooCommerce checkout. It also supports delivery location selection and includes admin options for blackout dates, no-delivery days, accepted areas, and order limits.
+The project treats checkout delivery selection as an operational constraint, not only as a calendar field. Every submitted value is validated again on the server and persisted through WooCommerce CRUD APIs.
 
----
+## Capabilities
 
-## 🎯 Ideal For
+- Delivery date with closed weekdays and blackout dates.
+- Merchant-defined time windows and accepted service areas.
+- Configurable maximum orders per delivery date.
+- Server-side validation for classic and block checkout.
+- High-Performance Order Storage (HPOS) compatibility.
+- WooCommerce Additional Checkout Fields API integration for Checkout Blocks.
+- Delivery data in order administration and transactional emails.
+- Sanitized, capability-protected settings under **WooCommerce → Delivery capacity**.
 
-- WooCommerce stores offering local delivery.
-- Shops that need to control daily delivery slots.
-- Businesses with limited delivery availability (e.g. not Sundays or holidays).
+## Architecture
 
----
+```text
+Merchant settings
+      │
+      ▼
+AvailabilityRules ──────► Checkout validation
+      │                         │
+      │                         ├── Classic checkout
+      │                         └── Checkout Blocks
+      ▼
+OrderCapacity ──────────► WC_Order_Query / HPOS
+                                │
+                                ▼
+                         WC_Order metadata
+                                │
+                         Admin + email output
+```
 
-## ✨ Features
+The domain rules are isolated from WordPress so dates, time windows, and locations can be unit tested without booting WooCommerce. Infrastructure classes translate those decisions into WooCommerce hooks and CRUD operations.
 
-- 📅 Datepicker with blackout dates and no-delivery days.
-- 🕐 Time selection with customizable options.
-- 📍 Delivery location dropdown with pre-approved entries.
-- 🚫 Limit number of orders per day (prevent overbooking).
-- 📥 Delivery info saved to order and visible in admin/emails.
-- ⚙️ Admin settings panel with full control.
+## Requirements
 
----
+- WordPress 6.5+
+- WooCommerce 8.9+
+- PHP 8.2+
 
-## 📦 How It Works
+## Installation
 
-1. Customers choose a delivery date, time, and location at checkout.
-2. The system checks for:
-   - Empty required fields
-   - Invalid locations
-   - Maximum orders per day
-3. Admin sees this data in the order panel and confirmation emails.
+1. Download the repository as a ZIP.
+2. Upload it from **Plugins → Add New → Upload Plugin**.
+3. Activate the plugin.
+4. Configure delivery rules under **WooCommerce → Delivery capacity**.
 
----
+## Development
 
-## ⚙️ Installation
+```bash
+composer install
+composer test
+composer lint
+```
 
-1. Download and upload the plugin folder to `/wp-content/plugins/`.
-2. Activate the plugin through the WordPress admin.
-3. Go to **Settings > Delivery Pick Day** to configure options.
+## Capacity semantics
 
----
+Orders in `pending`, `on-hold`, processing, or paid states consume capacity. Cancelled, failed, refunded, and trashed orders do not. Capacity is checked on each server-side checkout validation request.
 
-## 🧰 Admin Settings Include:
+For very high-concurrency stores, a dedicated reservation table with expiring pre-checkout holds would be the next architectural step. This version deliberately documents that boundary rather than claiming distributed locking it does not provide.
 
-- Field titles and labels
-- Delivery times (comma-separated)
-- Blackout dates (e.g. holidays)
-- No-delivery weekdays (checkboxes)
-- Accepted delivery locations
-- Require fields toggle
+## Security and data handling
 
----
+- Checkout values are never trusted from the browser.
+- Dates must be valid ISO dates and cannot be in the past, blocked, or on a closed weekday.
+- Times and locations must match merchant-controlled allowlists.
+- Settings use a typed sanitization callback.
+- Order access uses WooCommerce CRUD APIs and is HPOS-safe.
 
-## 🧪 Tested Up To
+## License
 
-- WordPress 6.8+
-- WooCommerce latest
-- PHP 8.2
-
----
-
-## 📄 License
-
-Copyright © 2025 CostasCh  
-Licensed under GPLv2 or later
+GPL-2.0-or-later.
