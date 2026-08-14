@@ -14,6 +14,7 @@ The project treats checkout delivery selection as an operational constraint, not
 - WooCommerce Additional Checkout Fields API integration for Checkout Blocks.
 - Delivery data in order administration and transactional emails.
 - Sanitized, capability-protected settings under **WooCommerce → Delivery capacity**.
+- Backward-compatible reads for delivery metadata created by version 2.x.
 
 ## Architecture
 

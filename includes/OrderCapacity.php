@@ -12,6 +12,7 @@ namespace CostasCh\WCDelivery;
 final class OrderCapacity
 {
     public const DATE_META = '_wc_delivery_date';
+    public const LEGACY_DATE_META = '_delivery_pick_day';
 
     public function hasCapacity(string $date, int $limit): bool
     {
@@ -26,8 +27,14 @@ final class OrderCapacity
             'limit' => max(1, $limit),
             'return' => 'ids',
             'meta_query' => [
+                'relation' => 'OR',
                 [
                     'key' => self::DATE_META,
+                    'value' => $date,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => self::LEGACY_DATE_META,
                     'value' => $date,
                     'compare' => '=',
                 ],

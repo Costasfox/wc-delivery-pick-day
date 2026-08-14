@@ -49,10 +49,14 @@ final class OrderMeta
 
     private static function values(object $order): array
     {
+        $date = (string) $order->get_meta(OrderCapacity::DATE_META);
+        $time = (string) $order->get_meta(Checkout::TIME_META);
+        $location = (string) $order->get_meta(Checkout::LOCATION_META);
+
         return [
-            'date' => (string) $order->get_meta(OrderCapacity::DATE_META),
-            'time' => (string) $order->get_meta(Checkout::TIME_META),
-            'location' => (string) $order->get_meta(Checkout::LOCATION_META),
+            'date' => $date !== '' ? $date : (string) $order->get_meta(OrderCapacity::LEGACY_DATE_META),
+            'time' => $time !== '' ? $time : (string) $order->get_meta(Checkout::LEGACY_TIME_META),
+            'location' => $location !== '' ? $location : (string) $order->get_meta(Checkout::LEGACY_LOCATION_META),
         ];
     }
 }

@@ -20,6 +20,8 @@ final class Checkout
     public const BLOCK_LOCATION = 'costasch-delivery/location';
     public const TIME_META = '_wc_delivery_time';
     public const LOCATION_META = '_wc_delivery_location';
+    public const LEGACY_TIME_META = '_delivery_pick_time';
+    public const LEGACY_LOCATION_META = '_delivery_location';
 
     public function __construct(private readonly OrderCapacity $capacity)
     {
